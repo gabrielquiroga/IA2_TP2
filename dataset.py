@@ -16,3 +16,6 @@ datostranspuestosfiltrados = np.array([v for v in datostranspuestos if v[3] != '
 print(datostranspuestosfiltrados)
 
 print (datostranspuestosfiltrados[1][2])
+
+df = pd.DataFrame(datostranspuestosfiltrados)
+df.to_csv('datos_filtrados.csv')
