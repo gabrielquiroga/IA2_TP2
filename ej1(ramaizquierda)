@@ -1,6 +1,7 @@
 
 %base de conocimientos
 
+%rama izquierda
 thickness_treshold(body) :- thickness(body,T),T < 10.
 thickness_treshold(pipes) :- thickness(pipes,T),T < 8.
 thickness_treshold(joints) :- thickness(joints,T),T < 6.
@@ -9,22 +10,39 @@ parts(body).
 parts(pipes).
 parts(joints).
 
+
 renderandpaint(P) :- parts(P),rusting(P,R),R=true;dazzling(P,D),D=true. %si es true significa que hay que pintar osea que es malo 
+%rama derecha
+soap_test(joints):- gas_leakage(joints,L),not(L=true). %pasa el soap test si no hay derrames
+leakage_solution(joints):- wrench_fix(joints,W),W=true,writeln('report joints to technical inspection unit');wrench_fix(joints,W),W=false,writeln('report joints to repair department to fix the fault').
 
 %Gran afirmacion que revisa todas las condiciones
-safety(valve) :- not(renderandpaint(body)),not(renderandpaint(joints)),not(renderandpaint(pipes)),thickness_treshold(body),thickness_treshold(pipes),thickness_treshold(joints).  
+safety(valve) :- not(renderandpaint(body)),not(renderandpaint(joints)),not(renderandpaint(pipes)),
+                thickness_treshold(body),thickness_treshold(pipes),thickness_treshold(joints),
+                soap_test(joints).  
+quehago(valve):- renderandpaint(body),writeln('render and paint the body');renderandpaint(joints),writeln('render and paint the joints');renderandpaint(pipes),writeln('render and paint the pipes');
+                not(thickness_treshold(body)),writeln('report the body to the Technical Inspection Unit: Thickness problem');not(thickness_treshold(pipes)),writeln('report the pipes to the Technical Inspection Unit: Thickness problem');not(thickness_treshold(joints)),writeln('report the joints to the Technical Inspection Unit: Thickness problem');
+                not(soap_test(joints)),leakage_solution(joints). 
 
 %Ground Facts
 
-thickness(body, X) :- X is 7.
-thickness(pipes, X) :- X is 2.
-thickness(joints, X) :- X is 5.
+:- dynamic thickness/2.
+thickness(body, 7).
+thickness(pipes, 20).
+thickness(joints, 5).
 
-rusting(body, R) :- R = true.
-rusting(pipes, R) :- R = true.
-rusting(joints, R) :- R = false.
+:- dynamic rusting/2.
+rusting(body,true).
+rusting(pipes,true).
+rusting(joints,false).
 
-dazzling(body, D) :- D = true.
-dazzling(pipes, D) :- D = false.
-dazzling(joints, D) :- D = true.
+:- dynamic dazzling/2.
+dazzling(body, false).
+dazzling(pipes,false).
+dazzling(joints, false).
 
+:- dynamic gas_leakage/2.
+gas_leakage(joints, true). 
+
+:- dynamic wrench_fix/2.
+wrench_fix(joints,false). 
